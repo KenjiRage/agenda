@@ -1,14 +1,18 @@
 package com.example.agenda;
 
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,6 +27,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Window window = getWindow();
+
+        // ✅ Forzar el color de la barra de estado (status bar) y la barra de navegación
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.purple_700)); // Color de la barra de estado
+            window.setNavigationBarColor(getResources().getColor(R.color.purple_700)); // Color de la barra de navegación
+        }
+
+        // ✅ Asegurar que la barra de estado sea visible
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(true); // Asegurar que no sea transparente
+            window.getInsetsController().show(WindowInsets.Type.statusBars());
+        } else {
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+
+        // Inicializar elementos
         calendarView = findViewById(R.id.calendarView);
         sharedPreferences = getSharedPreferences("AgendaPrefs", MODE_PRIVATE);
 
